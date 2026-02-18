@@ -8,8 +8,11 @@ const router = Router();
 router.post('/register', AuthController.register);
 router.post('/verify',   AuthController.verifyEmail);
 router.post('/login',    AuthController.login);
+router.post('/refresh-token', AuthController.refreshToken);
 
 // --- PROTECTED ROUTES ---
+router.post('/select-club', protect, AuthController.selectClub);
+router.post('/set-profile', protect, AuthController.setProfile); 
 router.post('/select-club', protect, AuthController.selectClub);
 
 export default router;

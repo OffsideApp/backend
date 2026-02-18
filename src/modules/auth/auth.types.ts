@@ -1,11 +1,9 @@
-
-
-// --- INPUT TYPES (DTOs) ---
-
 export interface RegisterDto {
-  username: string;
-  email:    string;
-  password: string;
+  firstName: string;
+  lastName:  string;
+  email:     string;
+  password:  string;
+  // Username is NOT here anymore
 }
 
 export interface LoginDto {
@@ -13,25 +11,37 @@ export interface LoginDto {
   password: string;
 }
 
-// Add this to your existing types
 export interface VerifyEmailDto {
   email: string;
   otp:   string;
 }
 
-// --- OUTPUT TYPES ---
+export interface SetProfileDto {
+  userId: string;
+  username: string;
+  bio?:     string; // Optional bio
+}
+
+export interface RefreshTokenDto {
+  refreshToken: string;
+}
+
+
+//---------RESPONSE GOTTEN FROM BACKEND --------------//
 
 export interface LoginResponse {
   userId: string;
-  email: string;
-  role: string;
-  token: string;
-  hasSelectedClub: boolean; // <--- The new critical flag
+  email:  string;
+  role:   string;
+  accessToken:  string; // 👈 Renamed from 'token'
+  refreshToken: string; // 👈 New
+  hasSelectedClub: boolean;
+  hasUsername:     boolean;
 }
 
 
 export interface RegisterResponse {
-  userId: string;
+  userId:  string;
   email:   string;
-  message: string
+  message: string;
 }

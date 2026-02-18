@@ -12,21 +12,35 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
 model User {
-  id        String   @id @default(uuid()) // UUID is better for security than numbers
-  username  String   @unique
-  email     String   @unique
-  password  String
-  club      String?   // e.g., "Chelsea", "Arsenal"
-  avatar    String?  @default("https://i.imgur.com/6VBx3io.png")
-  reputation Int     @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  firstName   String   
+  lastName    String   
+  username    String?  @unique 
+  email       String   @unique
+  password    String
+  bio         String?  // ✅ Added Bio
+  club        String?
+  avatar      String?  @default("https://i.imgur.com/6VBx3io.png")
+  reputation  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   isVerified  Boolean  @default(false)
-  otp         String?  
-  otpExpires  DateTime? 
-  role       ROLE      @default(USER)
+  role        ROLE     @default(USER)
+  refreshToken String?
+
+  // Relation: A user can have OTPs
+  otps        OTP[]
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  code      String   // The 6-digit code
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  // Link to User
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum ROLE {
