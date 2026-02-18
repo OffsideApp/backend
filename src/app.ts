@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 // Import Routes
-import authRoutes from './modules/auth/auth.routes';
+import authRoutes from './modules/auth/auth.route';
 
 // Import Error Handling
 import { globalErrorHandler } from './middleware/error.middleware';
@@ -28,7 +28,7 @@ app.use(cors());
 app.use(express.json({ limit: '10kb' }));
 
 // 2. ROUTES
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 // Health Check (To see if server is alive)
 app.get('/', (req, res) => {
@@ -37,11 +37,12 @@ app.get('/', (req, res) => {
 
 // 3. UNHANDLED ROUTES (404)
 // If a request gets here, it means no route matched above
-app.all('*', (req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// 4. GLOBAL ERROR HANDLER
+
+// 4. GLOBAL ERROR HANDLE
 app.use(globalErrorHandler);
 
 export default app;

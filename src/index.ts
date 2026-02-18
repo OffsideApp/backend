@@ -1,33 +1,41 @@
 import dotenv from 'dotenv';
-// Load env vars BEFORE importing app
+
+// 1️⃣ Load environment variables FIRST
 dotenv.config();
 
 import app from './app';
 import { prisma } from './libs/prisma';
 
 const PORT = process.env.PORT || 5000;
+const HOST = 'http://localhost';
 
-// Start Server
-const server = app.listen(PORT, async () => {
-  console.log(`\n⚽️  OFFSIDE SERVER STARTED  ⚽️`);
-  console.log(`🚀  Listening on port: ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-  
-  // Test Database Connection
-//   try {
-//     await prisma.$connect();
-//     console.log('✅  Database Connected Successfully');
-//   } catch (error) {
-//     console.error('❌  Database Connection Failed:', error);
-//   }
-// });
+// 2️⃣ Start Server
+const server = app.listen(PORT, () => {
+  const baseURL = `${HOST}:${PORT}`;
 
-// Handle Unhandled Rejections (e.g. Database crashes)
+  console.log('\n⚽️  OFFSIDE SERVER STARTED  ⚽️');
+  console.log(`🚀  Server running at: ${baseURL}`);
+  console.log(`📡  API Base URL: ${baseURL}/api/v1`);
+  console.log(`❤️  Health Check: ${baseURL}`);
+  console.log(`🌍  Environment: ${process.env.NODE_ENV || 'development'}\n`);
+});
+
+
+// 3️⃣ Handle Unhandled Promise Rejections
 process.on('unhandledRejection', (err: any) => {
-  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
-  server.close(() => {
+  console.error('💥 UNHANDLED REJECTION! Shutting down...');
+  console.error(`${err.name}: ${err.message}`);
+
+  server.close(async () => {
+    await prisma.$disconnect();
     process.exit(1);
   });
 });
-})
+
+
+// 4️⃣ Handle Uncaught Exceptions
+process.on('uncaughtException', (err: any) => {
+  console.error('💥 UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(`${err.name}: ${err.message}`);
+  process.exit(1);
+});
