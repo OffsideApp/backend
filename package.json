@@ -1,13 +1,13 @@
-  {
+{
   "name": "offside-backend",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push"
+    "prisma:push": "prisma db push",
+    "build": "npm run prisma:generate && tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.0",
@@ -18,7 +18,8 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
-    "pg": "^8.18.0"
+    "pg": "^8.18.0",
+    "dotenv": "^17.3.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -28,7 +29,6 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
-    "dotenv": "^17.3.1",
     "nodemon": "^3.1.11",
     "prisma": "^7.4.0",
     "ts-node": "^10.9.2",
