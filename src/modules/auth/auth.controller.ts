@@ -40,8 +40,8 @@ export class AuthController {
   // 5. SELECT CLUB
   static selectClub = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user!.id; 
-    const { club } = req.body
-     const updatedUser = await AuthService.selectClub({userId: userId, clubName: club});
+    const { clubName } = req.body
+     const updatedUser = await AuthService.selectClub({userId: userId, clubName: clubName});
     
     res.status(200).json({
       success: true,
