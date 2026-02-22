@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../libs/prisma";
-import { RegisterDto, LoginDto, RegisterResponse, LoginResponse, VerifyEmailDto, SetProfileDto, RefreshTokenDto } from "./auth.types";
+import { RegisterDto, LoginDto, RegisterResponse, LoginResponse, VerifyEmailDto, SetProfileDto, RefreshTokenDto, selectClubDto } from "./auth.types";
 import { ROLE } from "../../generated/prisma/client";
 import { AppError } from "../../utils/AppError";
 
@@ -140,10 +140,10 @@ export class AuthService {
   }
 
   // 5. SELECT CLUB
-  static async selectClub(userId: string, clubName: string) {
+  static async selectClub(dto: selectClubDto) {
     return await prisma.user.update({
-      where: { id: userId },
-      data: { club: clubName }
+      where: { id: dto.userId },
+      data: { club: dto.clubName }
     });
   }
 

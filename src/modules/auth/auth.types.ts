@@ -26,6 +26,11 @@ export interface RefreshTokenDto {
   refreshToken: string;
 }
 
+export interface selectClubDto{
+  userId: string;
+  clubName: string;
+
+}
 
 //---------RESPONSE GOTTEN FROM BACKEND --------------//
 
