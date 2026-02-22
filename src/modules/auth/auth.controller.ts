@@ -25,10 +25,10 @@ export class AuthController {
 
   // 4. SET PROFILE (Username + Bio)
   static setProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // const userId = req.user!.id; 
-    // const { username, bio } = req.body; // Expecting Bio here too
+    const userId = req.user!.id; 
+    const { username, bio } = req.body; // Expecting Bio here too
 
-    const updatedUser = await AuthService.setProfile(req.body);
+    const updatedUser = await AuthService.setProfile({userId: userId, username: username, bio: bio});
 
     res.status(200).json({
       success: true,
