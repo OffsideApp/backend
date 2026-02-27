@@ -31,6 +31,8 @@ model User {
 
   // Relation: A user can have OTPs
   otps        OTP[]
+
+  posts Post[]
 }
 
 model OTP {
@@ -42,6 +44,29 @@ model OTP {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// NEW: The Feed Model
+model Post {
+  id            String   @id @default(uuid())
+  content       String   // The text rant
+  
+  hasAudio      Boolean  @default(false)
+  audioUrl      String?  
+  audioDuration String?  
+
+  // Metrics
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0) // <--- ADD THIS
+  commentsCount Int      @default(0)
+
+  // Relations
+  authorId      String
+  author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 
 enum ROLE {
   USER

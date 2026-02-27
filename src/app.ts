@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 // Import Routes
 import authRoutes from './modules/auth/auth.route';
+import feedRoutes from './modules/feed/feed.route'
 
 // Import Error Handling
 import { globalErrorHandler } from './middleware/error.middleware';
@@ -29,6 +30,7 @@ app.use(express.json({ limit: '10kb' }));
 
 // 2. ROUTES
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/feed', feedRoutes)
 
 // Health Check (To see if server is alive)
 app.get('/', (req, res) => {
