@@ -14,6 +14,7 @@ export interface CreatePostDto {
 export interface GetFeedDto {
   limit?: number;
   offset?: number;
+  club?: string;
 }
 
 export interface CreateCommentDto {

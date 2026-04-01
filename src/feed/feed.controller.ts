@@ -76,10 +76,15 @@ export class FeedController {
 
   // 2. GET FEED
   @Get('get-feed')
-  async getFeed(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+  async getFeed(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('club') club?: string,
+  ) {
     const posts = await this.feedService.getFeed({
       limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
+      club: club,
     });
     return { success: true, results: posts.length, data: posts };
   }

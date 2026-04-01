@@ -38,7 +38,10 @@ export class FeedService {
     const limit = dto.limit ? Number(dto.limit) : 20;
     const offset = dto.offset ? Number(dto.offset) : 0;
 
+    const filter = dto.club ? { author: { club: dto.club } } : {};
+
     return await this.prisma.post.findMany({
+      where: filter,
       take: limit,
       skip: offset,
       orderBy: { createdAt: 'desc' },
