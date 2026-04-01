@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+model User {
+  id          String   @id @default(uuid())
+  firstName   String   
+  lastName    String   
+  username    String?  @unique 
+  email       String   @unique
+  password    String
+  bio         String?  // ✅ Added Bio
+  club        String?
+  avatar      String?  @default("https://i.imgur.com/6VBx3io.png")
+  reputation  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isVerified  Boolean  @default(false)
+  role        ROLE     @default(USER)
+  refreshToken String?
+
+  comments      Comment[]
+
+  followers    User[]   @relation("UserFollows")
+  following    User[]   @relation("UserFollows")
+
+  interactions Interaction[] // 👈 Tracks what this user has voted on
+
+  // Relation: A user can have OTPs
+  otps        OTP[]
+
+  posts Post[]
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  code      String   // The 6-digit code
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  // Link to User
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// NEW: The Feed Model
+model Post {
+  id            String   @id @default(uuid())
+  content       String   // The text rant
+  
+  hasAudio      Boolean  @default(false)
+  audioUrl      String?  
+  audioDuration String?  
+
+  // Metrics
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0) // <--- ADD THIS
+  commentsCount Int      @default(0)
+
+  hasImage      Boolean  @default(false)
+  imageUrl      String?
+
+  comments      Comment[]
+  interactions  Interaction[]
+
+  // Relations
+  authorId      String
+  author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String?
+
+  hasAudio      Boolean  @default(false)
+  audioUrl      String?
+  audioDuration String?
+  hasImage      Boolean  @default(false)
+  imageUrl      String?
+  
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Interaction {
+  id        String          @id @default(uuid())
+  type      InteractionType // COOK or OFFSIDE
+  
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  postId    String
+  post      Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime        @default(now())
+
+  // 🚀 SAFETY MEASURE: A user can only have ONE interaction per post!
+  @@unique([userId, postId]) 
+}
+
+
+enum InteractionType {
+  COOK
+  OFFSIDE
+}
+
+
+enum ROLE {
+  USER
+  ADMIN
+}
