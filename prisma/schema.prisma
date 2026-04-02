@@ -117,6 +117,23 @@ model Interaction {
 }
 
 
+model Match {
+  id          String   @id @default(uuid())
+  apiId       Int      @unique // The unique ID from API-Football
+  homeTeam    String
+  awayTeam    String
+  homeLogo    String
+  awayLogo    String
+  homeScore   Int      @default(0)
+  awayScore   Int      @default(0)
+  status      String   // e.g., "NS" (Not Started), "1H", "HT", "2H", "FT"
+  matchTime   String?  // e.g., "67'" or "90+2"
+  fixtureDate DateTime // When does the match actually start?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 enum InteractionType {
   COOK
   OFFSIDE

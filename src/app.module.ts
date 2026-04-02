@@ -4,17 +4,21 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; // Good for loading .env globally
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { FeedModule } from './feed/feed.module';
 import { PrismaModule } from 'prisma/prisma.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // Loads your .env file
+    ScheduleModule.forRoot(),
     PrismaModule,
     CloudinaryModule,
     AuthModule, // 🚀 Plugs in your Auth routes
     FeedModule, // 🚀 Plugs in your Feed routes
+    MatchModule
   ],
   controllers: [],
   providers: [],
