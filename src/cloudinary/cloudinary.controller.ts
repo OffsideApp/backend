@@ -22,7 +22,6 @@ export class CloudinaryController {
 
     // Uploads to Cloudinary and gets the secure URL
     const url = await this.cloudinaryService.uploadAudio(file);
-
     return { url };
   }
 }

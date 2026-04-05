@@ -16,8 +16,8 @@ import { MatchModule } from './match/match.module';
     ScheduleModule.forRoot(),
     PrismaModule,
     CloudinaryModule,
-    AuthModule, // 🚀 Plugs in your Auth routes
-    FeedModule, // 🚀 Plugs in your Feed routes
+    AuthModule,
+    FeedModule,
     MatchModule
   ],
   controllers: [],
