@@ -33,4 +33,9 @@ export class MatchGateway {
       ...messageData,
     });
   }
+
+  // 🚀 NEW: The Service will call this when a goal happens!
+  broadcastScoreUpdate(matchId: string, matchData: any) {
+    this.server.to(matchId).emit('scoreUpdate', matchData);
+  }
 }

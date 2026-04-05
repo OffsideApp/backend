@@ -10,5 +10,6 @@ import { MatchGateway } from './match.gateway';
   imports: [PrismaModule, AuthModule],
   controllers: [MatchController],
   providers: [MatchService, MatchGateway],
+  exports:[MatchService, MatchGateway]
 })
 export class MatchModule {}
