@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
 import { WebSocketGateway, SubscribeMessage, MessageBody, ConnectedSocket, WebSocketServer } from '@nestjs/websockets';
@@ -8,10 +9,15 @@ export class MatchGateway {
   @WebSocketServer()
   server!: Server;
 
+  private matchMessages: Record<string, any[]> = {}
+
   // 1. User joins a specific match room
   @SubscribeMessage('joinMatch')
   handleJoinMatch(@MessageBody() data: { matchId: string }, @ConnectedSocket() client: Socket) {
     client.join(data.matchId);
+
+    const history = this.matchMessages[data.matchId] || []
+    client.emit('chatHistory', history)
     console.log(`Client ${client.id} joined match room: ${data.matchId}`);
   }
 
@@ -23,18 +29,31 @@ export class MatchGateway {
   }
 
   // 3. User sends a message -> Broadcast to everyone in that room
-  @SubscribeMessage('sendMessage')
+@SubscribeMessage('sendMessage')
   handleMessage(@MessageBody() payload: any) {
     const { matchId, ...messageData } = payload;
-    
-    // Broadcast back to EVERYONE in the room (including the sender so it updates their UI)
-    this.server.to(matchId).emit('newMessage', {
-      id: Math.random().toString(), // Temporary ID until we save to Prisma
+    const message = {
+      id: Math.random().toString(), 
       ...messageData,
-    });
+    };
+
+    // Initialize the memory array for this match if it's the first message
+    if (!this.matchMessages[matchId]) {
+      this.matchMessages[matchId] = [];
+    }
+
+    // Add new message to the top of the history list
+    this.matchMessages[matchId].unshift(message);
+
+    // Only keep the last 50 messages to prevent server RAM from overloading
+    if (this.matchMessages[matchId].length > 50) {
+      this.matchMessages[matchId].pop();
+    }
+
+    // Broadcast the single new message to everyone
+    this.server.to(matchId).emit('newMessage', message);
   }
 
-  // 🚀 NEW: The Service will call this when a goal happens!
   broadcastScoreUpdate(matchId: string, matchData: any) {
     this.server.to(matchId).emit('scoreUpdate', matchData);
   }
